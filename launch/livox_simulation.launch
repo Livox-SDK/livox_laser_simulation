@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="world" default="$(find livox_laser_simulation)/worlds/standardrobots_factory.world" />
+  <arg name="livox_sensor" default="$(find livox_laser_simulation)/urdf/livox_avia.xacro" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+	<arg name="world_name" value="$(arg world)"/> <arg name="paused" 
+	value="false"/> <arg name="use_sim_time" value="true"/> <arg 
+	name="gui" value="true"/> <arg name="headless" value="false"/> <arg 
+	name="debug" value="false"/> <arg name="verbose" value="true"/>
+  </include>
+  
+  <param name="sensor_description" command="$(find xacro)/xacro --inorder $(arg livox_sensor)" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model livox_lidar -param sensor_description" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find livox_laser_simulation)/rviz/livox_simulation.rviz"/>
+</launch>

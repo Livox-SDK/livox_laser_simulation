@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="livox_lidar">
+    
+    <!-- Defining the colors used in this robot -->
+    <material name="Black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <material name="White">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="Blue">
+        <color rgba="0 0 1 1"/>
+    </material>
+
+    <material name="Red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+	<!-- Constants --> <xacro:property name="M_PI" value="3.14159"/> 
+	<!-- inertial matrix --> 
+	<xacro:macro name="inertial_matrix" params="mass">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0" />
+        </inertial>
+    </xacro:macro>
+<!--
+    world link is named as "link"
+-->
+	<xacro:macro name="link_oasis" params="name:=oasis base_link:=oasis_300 world_link:=link">
+    <link name="link"/>
+    <!-- base_link -->
+    <link name="oasis_300">
+        <visual>
+			<origin xyz="0.00 0 0.05" rpy="0 0 0"/>
+            <geometry>
+				  <mesh filename="package://livox_laser_simulation/meshes/standardrobots.STL"/>
+            </geometry>
+        </visual>
+        <collision>
+			<origin xyz="0.00 0 0.05" rpy="0 0 0"/>
+            <geometry>
+				  <mesh filename="package://livox_laser_simulation/meshes/standardrobots.STL"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_matrix mass="1"/>
+		<kinematic>1</kinematic>
+		<gravity>9.8</gravity>
+    </link>
+    
+    <gazebo reference="oasis_300">
+        <material>Gazebo/White</material>
+    </gazebo>
+	<joint name="fixed" type="fixed">
+		<parent link="${world_link}"/>
+		<child link="${base_link}"/>
+		<origin xyz="0.0 0 0.05" rpy="0 0 ${M_PI/2}" />
+	</joint>
+	<joint name="livox_base_joint" type="fixed">
+        <parent link="${base_link}"/>
+        <child link="livox_base"/>
+        <origin rpy="0 0 1.5707"
+                xyz="0.0 0.4 0.3057"/>
+    </joint>
+    </xacro:macro>
+</robot>
