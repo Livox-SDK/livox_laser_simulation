@@ -2,9 +2,9 @@
 A package to provide plug-in for [Livox Series LiDAR](https://www.livoxtech.com).
 
 ## Requirements
-- ROS(=Melodic)
-- Gazebo (= 9.x, http://gazebosim.org/)
-- Ubuntu(=18.04)
+- ROS(=Kinectic)
+- Gazebo (= 7.0, http://gazebosim.org/)
+- Ubuntu(=16.04)
 
 ## Results
 - avia
@@ -24,8 +24,6 @@ A package to provide plug-in for [Livox Series LiDAR](https://www.livoxtech.com)
 ![](resources/horizon.gif)
 
 ## Usage
-
-> Note that the version of gazebo in main branch is gazebo 9.18. If you use gazebo 7, checkout to "gazebo7" branch.
 
 Before you write your urdf file by using this plugin, catkin_make/catkin build is needed.
 

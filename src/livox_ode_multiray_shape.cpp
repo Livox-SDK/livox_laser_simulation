@@ -12,7 +12,6 @@
 #include <gazebo/physics/ode/ODERayShape.hh>
 #include <gazebo/physics/ode/ODEMultiRayShape.hh>
 #include "livox_laser_simulation/livox_ode_multiray_shape.h"
-#include <ignition/math4/ignition/math.hh>
 
 using namespace gazebo;
 using namespace physics;
@@ -55,7 +54,7 @@ LivoxOdeMultiRayShape::~LivoxOdeMultiRayShape()
 void LivoxOdeMultiRayShape::UpdateRays()
 {
     ODEPhysicsPtr ode = boost::dynamic_pointer_cast<ODEPhysics>(
-        this->GetWorld()->Physics());
+        this->GetWorld()->GetPhysicsEngine());
 
     if (ode == NULL)
         gzthrow("Invalid physics engine. Must use ODE.");
@@ -170,8 +169,8 @@ void LivoxOdeMultiRayShape::UpdateCallback(void *_data, dGeomID _o1, dGeomID _o2
 }
 
 //////////////////////////////////////////////////
-void LivoxOdeMultiRayShape::AddRay(const ignition::math::Vector3d &_start,
-                              const ignition::math::Vector3d &_end)
+void LivoxOdeMultiRayShape::AddRay(const math::Vector3 &_start,
+                              const math::Vector3 &_end)
 {
     MultiRayShape::AddRay(_start, _end);
 
@@ -187,9 +186,9 @@ void LivoxOdeMultiRayShape::AddRay(const ignition::math::Vector3d &_start,
     this->rays.push_back(ray);
 }
 void LivoxOdeMultiRayShape::Init() {
-    ignition::math::Vector3d start, end, axis;
+    math::Vector3 start, end, axis;
     double yawAngle, pitchAngle;
-    // ignition::math::Quaternion ray;
+    math::Quaternion ray;
     double yDiff;
     double horzMinAngle, horzMaxAngle;
     int horzSamples = 1;
