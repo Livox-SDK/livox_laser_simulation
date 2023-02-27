@@ -31,6 +31,7 @@ void convertDataToRotateInfo(const std::vector<std::vector<double>> &datas, std:
             avia_infos.back().time = data[0];
             avia_infos.back().azimuth = data[1] * deg_2_rad;
             avia_infos.back().zenith = data[2] * deg_2_rad - M_PI_2;  //转化成标准的右手系角度
+            //ROS_INFO_STREAM("Point: time:" <<  avia_infos.back().time << " azimuth: " << avia_infos.back().azimuth << " zenith: " << avia_infos.back().zenith);
         } else {
             ROS_INFO_STREAM("data size is not 3!");
         }
@@ -99,6 +100,7 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
         int index = j % maxPointSize;
         auto &rotate_info = aviaInfos[index];
         ignition::math::Quaterniond ray;
+        //       (roll, pitch, yaw)
         ray.Euler(ignition::math::Vector3d(0.0, rotate_info.zenith, rotate_info.azimuth));
         auto axis = offset.Rot() * ray * ignition::math::Vector3d(1.0, 0.0, 0.0);
         start_point = minDist * axis + offset.Pos();

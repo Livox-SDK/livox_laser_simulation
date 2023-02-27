@@ -12,7 +12,7 @@
 #include <gazebo/physics/ode/ODERayShape.hh>
 #include <gazebo/physics/ode/ODEMultiRayShape.hh>
 #include "livox_laser_simulation/livox_ode_multiray_shape.h"
-#include <ignition/math4/ignition/math.hh>
+#include <ignition/math6/ignition/math.hh>
 
 using namespace gazebo;
 using namespace physics;
@@ -215,6 +215,7 @@ void LivoxOdeMultiRayShape::Init() {
         vertSamples = this->vertElem->Get<unsigned int>("samples");
         // vertResolution = this->vertElem->Get<double>("resolution");
         pDiff = vertMaxAngle - vertMinAngle;
+        gzerr << "Vertical min_angle: " << vertMinAngle << " max_angle: " << vertMaxAngle << " angle diff: " << pDiff << "\n"; // 30 deg
     }
 
     horzMinAngle = this->horzElem->Get<double>("min_angle");
@@ -222,6 +223,7 @@ void LivoxOdeMultiRayShape::Init() {
     horzSamples = this->horzElem->Get<unsigned int>("samples");
     // horzResolution = this->horzElem->Get<double>("resolution");
     yDiff = horzMaxAngle - horzMinAngle;
+    gzerr << "Horizontal min_angle: " << horzMinAngle << " max_angle: " << horzMaxAngle << " angle diff: " << yDiff << "\n"; // 30 deg
 
     minRange = this->rangeElem->Get<double>("min");
     maxRange = this->rangeElem->Get<double>("max");
