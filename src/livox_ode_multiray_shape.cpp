@@ -164,7 +164,6 @@ void LivoxOdeMultiRayShape::UpdateCallback(void *_data, dGeomID _o1, dGeomID _o2
                     shape->SetLength(contact.depth);
                     shape->SetRetro(hitCollision->GetLaserRetro());
                 }
-                //shape->SetLength(0.0);
             }
         }
     }
@@ -175,7 +174,6 @@ void LivoxOdeMultiRayShape::AddRay(const ignition::math::Vector3d &_start,
                               const ignition::math::Vector3d &_end)
 {
     MultiRayShape::AddRay(_start, _end);
-
     ODECollisionPtr odeCollision(new ODECollision(
         this->collisionParent->GetLink()));
     odeCollision->SetName("ode_ray_collision");
@@ -201,8 +199,6 @@ void LivoxOdeMultiRayShape::Init() {
     // double vertResolution = 1.0;
     double vertMinAngle = 0;
 
-    double minRange, maxRange;
-
     this->rayElem = this->sdf->GetElement("ray");
     this->scanElem = this->rayElem->GetElement("scan");
     this->horzElem = this->scanElem->GetElement("horizontal");
@@ -226,8 +222,10 @@ void LivoxOdeMultiRayShape::Init() {
     yDiff = horzMaxAngle - horzMinAngle;
     gzerr << "Horizontal min_angle: " << horzMinAngle << " max_angle: " << horzMaxAngle << " angle diff: " << yDiff << "\n"; // 30 deg
 
-    minRange = this->rangeElem->Get<double>("min");
-    maxRange = this->rangeElem->Get<double>("max");
+    minRayRange = this->rangeElem->Get<double>("min");
+    maxRayRange = this->rangeElem->Get<double>("max");
+    // The measurable range is (max-min)
+    fullRange = this->GetMaxRange() - this->GetMinRange();
 
 //    this->offset = this->collisionParent->GetRelativePose();
 
@@ -258,9 +256,6 @@ void LivoxOdeMultiRayShape::Init() {
 //////////////////////////////////////////////////
 void LivoxOdeMultiRayShape::Update()
 {
-  // The measurable range is (max-min)
-  double fullRange = this->GetMaxRange() - this->GetMinRange();
-
   // Reset the ray lengths and mark the collisions as dirty (so they get
   // redrawn)
   unsigned int ray_size = this->rays.size();
@@ -278,4 +273,16 @@ void LivoxOdeMultiRayShape::Update()
 
   // for plugin
   this->newLaserScans();
+}
+
+//////////////////////////////////////////////////
+double LivoxOdeMultiRayShape::GetMinRange() const
+{
+  return minRayRange;
+}
+
+//////////////////////////////////////////////////
+double LivoxOdeMultiRayShape::GetMaxRange() const
+{
+  return maxRayRange;
 }

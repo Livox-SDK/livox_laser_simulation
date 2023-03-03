@@ -44,9 +44,21 @@ class GZ_PHYSICS_VISIBLE LivoxOdeMultiRayShape : public MultiRayShape{
     private: dSpaceID raySpaceId;
 
     public: void Update();
- 
+
+    /// \brief Get the minimum range.
+    /// \return Minimum range of all the rays.
+    public: double GetMinRange() const;
+
+    /// \brief Get the maximum range.
+    /// \return Maximum range of all the rays.
+    public: double GetMaxRange() const;
+
  private:
     std::vector<RayShapePtr> livoxRays;
+
+    double fullRange;
+    double minRayRange;
+    double maxRayRange;
 };
 }
 }

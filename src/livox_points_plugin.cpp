@@ -199,7 +199,7 @@ void LivoxPointsPlugin::OnNewLaserScans() {
             }
             if (verticle_index < verticalRayCount && horizon_index < rayCount) {
                 auto index = (verticalRayCount - verticle_index - 1) * rayCount + horizon_index;
-                auto range = rayShape->GetRange(pair.first);
+                auto range = minDist + rayShape->GetRange(pair.first);
                 auto intensity = rayShape->GetRetro(pair.first);
                 if (range >= RangeMax()) {
                     range = 0;
