@@ -164,6 +164,7 @@ void LivoxOdeMultiRayShape::UpdateCallback(void *_data, dGeomID _o1, dGeomID _o2
                     shape->SetLength(contact.depth);
                     shape->SetRetro(hitCollision->GetLaserRetro());
                 }
+                //shape->SetLength(0.0);
             }
         }
     }
@@ -252,4 +253,29 @@ void LivoxOdeMultiRayShape::Init() {
 //            this->AddRay(start, end);
 //        }
 //    }
+}
+
+//////////////////////////////////////////////////
+void LivoxOdeMultiRayShape::Update()
+{
+  // The measurable range is (max-min)
+  double fullRange = this->GetMaxRange() - this->GetMinRange();
+
+  // Reset the ray lengths and mark the collisions as dirty (so they get
+  // redrawn)
+  unsigned int ray_size = this->rays.size();
+  for (unsigned int i = 0; i < ray_size; i++)
+  {
+    this->rays[i]->SetLength(fullRange);
+    this->rays[i]->SetRetro(0.0);
+
+    // Get the global points of the line
+    this->rays[i]->Update();
+  }
+
+  // do actual collision checks
+  this->UpdateRays();
+
+  // for plugin
+  this->newLaserScans();
 }
