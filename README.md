@@ -7,6 +7,8 @@ A package to provide plug-in for [Livox Series LiDAR](https://www.livoxtech.com)
 - Ubuntu(=18.04)
 
 ## Results
+- HAP 
+- mid360
 - avia
 
 ![](resources/avia.gif)
@@ -38,6 +40,8 @@ Run
 to see.
 
 We can choose the lidar model by selecting different CSV file in scan_mode dir from changing the launch file:
+- HAP.csv
+- mid360.csv
 - avia.csv
 - horizon.csv
 - mid40.csv
