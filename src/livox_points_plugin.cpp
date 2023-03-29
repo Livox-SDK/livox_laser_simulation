@@ -132,13 +132,13 @@ void LivoxPointsPlugin::OnNewLaserScans() {
         auto &scan_points = scan_point.points;
 
         for (auto &pair : points_pair) {
-            int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
-            int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
-            if (verticle_index < 0 || horizon_index < 0) {
-                continue;
-            }
-            if (verticle_index < verticalRayCount && horizon_index < rayCount) {
-                auto index = (verticalRayCount - verticle_index - 1) * rayCount + horizon_index;
+            //int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
+            //int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
+            //if (verticle_index < 0 || horizon_index < 0) {
+            //   continue;
+            //}
+            //if (verticle_index < verticalRayCount && horizon_index < rayCount) {
+            //   auto index = (verticalRayCount - verticle_index - 1) * rayCount + horizon_index;
                 auto range = rayShape->GetRange(pair.first);
                 auto intensity = rayShape->GetRetro(pair.first);
                 if (range >= RangeMax()) {
@@ -146,8 +146,8 @@ void LivoxPointsPlugin::OnNewLaserScans() {
                 } else if (range <= RangeMin()) {
                     range = 0;
                 }
-                scan->set_ranges(index, range);
-                scan->set_intensities(index, intensity);
+                //scan->set_ranges(index, range);
+                //scan->set_intensities(index, intensity);
 
                 auto rotate_info = pair.second;
                 ignition::math::Quaterniond ray;
@@ -161,13 +161,13 @@ void LivoxPointsPlugin::OnNewLaserScans() {
                 scan_points.back().x = point.X();
                 scan_points.back().y = point.Y();
                 scan_points.back().z = point.Z();
-            } else {
+            //} else {
 
-                //                ROS_INFO_STREAM("count is wrong:" << verticle_index << "," << verticalRayCount << ","
-                //                << horizon_index
-                //                          << "," << rayCount << "," << pair.second.zenith << "," <<
-                //                          pair.second.azimuth);
-            }
+            //    //                ROS_INFO_STREAM("count is wrong:" << verticle_index << "," << verticalRayCount << ","
+            //    //                << horizon_index
+            //    //                          << "," << rayCount << "," << pair.second.zenith << "," <<
+            //    //                          pair.second.azimuth);
+            //}
         }
         if (scanPub && scanPub->HasConnections()) scanPub->Publish(laserMsg);
         rosPointPub.publish(scan_point);
