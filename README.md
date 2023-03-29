@@ -7,8 +7,6 @@ A package to provide plug-in for [Livox Series LiDAR](https://www.livoxtech.com)
 - Ubuntu(=18.04)
 
 ## Results
-- HAP 
-- mid360
 - avia
 
 ![](resources/avia.gif)
