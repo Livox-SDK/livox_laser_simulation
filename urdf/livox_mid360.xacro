@@ -3,12 +3,11 @@
 
   <xacro:property name="M_PI" value="3.14159"/> 
   <xacro:property name="laser_min_range" value="0.1"/>
-  <xacro:property name="laser_max_range" value="40.0"/>
-  <xacro:property name="horizontal_fov" value="180.0"/>
-  <xacro:property name="vertical_fov_max" value="52.0"/>
-  <xacro:property name="vertical_fov_min" value="-7.0"/>
+  <xacro:property name="laser_max_range" value="200.0"/>
+  <xacro:property name="horizontal_fov" value="70.4"/>
+  <xacro:property name="vertical_fov" value="70.4"/>
   <xacro:property name="ros_topic" value="scan"/>
-  <xacro:property name="samples" value="20000"/>
+  <xacro:property name="samples" value="10000"/>
   <xacro:property name="downsample" value="1"/>
   
   <xacro:macro name="null_inertial">
@@ -19,69 +18,94 @@
           izz="0.01"/>
     </inertial>
   </xacro:macro>
-  <xacro:macro name="Livox_Mid_gazebo_sensor" params="link:=blabla visualize:=True update_rate:=10 resolution:=0.02 noise_mean:=0.0 noise_stddev:=0.01 name:=livox ros_topic:=scan">
-    <gazebo reference="front_mount_link">
+  <xacro:macro name="Livox_Mid_gazebo_sensor" params="visualize:=True update_rate:=10 resolution:=0.002 noise_mean:=0.0 noise_stddev:=0.0 name:=livox">
+    <gazebo reference="${name}">
       <sensor type="ray" name="laser_${name}">
         <pose>0 0 0 0 0 0</pose>
         <visualize>${visualize}</visualize>
         <update_rate>${update_rate}</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>100</samples>
+              <resolution>1</resolution>
+              <min_angle>${-horizontal_fov/360*M_PI}</min_angle>
+              <max_angle>${horizontal_fov/360*M_PI}</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>50</samples>
+              <resolution>1</resolution>
+              <min_angle>${-vertical_fov/360*M_PI}</min_angle>
+              <max_angle>${vertical_fov/360*M_PI}</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>${laser_min_range}</min>
+            <max>${laser_max_range}</max>
+            <resolution>${resolution}</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>${noise_mean}</mean>
+            <stddev>${noise_stddev}</stddev>
+          </noise>
+        </ray>
         <!-- This ray plgin is only for visualization. -->
         <plugin name="gazebo_ros_laser_controller" filename="liblivox_laser_simulation.so">
-			<ray>
-			  <scan>
-				<horizontal>
-				<samples>100</samples>
-				<resolution>1</resolution>
-				<min_angle>${-horizontal_fov/180*M_PI}</min_angle>
-				<max_angle>${horizontal_fov/180*M_PI}</max_angle>
-				</horizontal>
-				<vertical>
-				<samples>50</samples>
-				<resolution>1</resolution>
-				<min_angle>${vertical_fov_min/180*M_PI}</min_angle>
-				<max_angle>${vertical_fov_max/180*M_PI}</max_angle>
-				</vertical>
-			  </scan>
-			  <range>
-				<min>${laser_min_range}</min>
-				<max>${laser_max_range}</max>
-				<resolution>${resolution}</resolution>
-			  </range>
-			  <noise>
-				<type>gaussian</type>
-				<mean>${noise_mean}</mean>
-				<stddev>${noise_stddev}</stddev>
-			  </noise>
-			</ray>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>100</samples>
+                <resolution>1</resolution>
+                <min_angle>${-horizontal_fov/360*M_PI}</min_angle>
+                <max_angle>${horizontal_fov/360*M_PI}</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>50</samples>
+                <resolution>1</resolution>
+                <min_angle>${-vertical_fov/360*M_PI}</min_angle>
+                <max_angle>${vertical_fov/360*M_PI}</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>${laser_min_range}</min>
+              <max>${laser_max_range}</max>
+              <resolution>${resolution}</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>${noise_mean}</mean>
+              <stddev>${noise_stddev}</stddev>
+            </noise>
+          </ray>
           <visualize>${visualize}</visualize>
-		  <samples>${samples}</samples>
-		  <downsample>${downsample}</downsample>
-		  <csv_file_name>package://livox_laser_simulation/scan_mode/mid360.csv</csv_file_name>
-		  <ros_topic>${ros_topic}</ros_topic>
+          <samples>${samples}</samples>
+          <downsample>${downsample}</downsample>
+          <csv_file_name>package://livox_laser_simulation/scan_mode/mid360.csv</csv_file_name>
+          <ros_topic>${ros_topic}</ros_topic>
         </plugin>
       </sensor>
     </gazebo>
   </xacro:macro>
 
-
   <xacro:macro name="Livox_Mid360" params="visualize:=True name:=livox">
     <link name="${name}_base">
       <xacro:null_inertial/>
       <visual> 
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0.00 0 0.00" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://livox_laser_simulation/meshes/livox_mid360.stl">
+          <mesh filename="package://livox_laser_simulation/meshes/livox_mid40.dae">
           </mesh>
         </geometry>
       </visual>
-      <!--
+
       <collision>
-          <origin xyz="0 0 -0.047" rpy="0 0 0" />
+          <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-          <mesh filename="package://livox_laser_simulation/meshes/livox_mid360.stl">
+          <mesh filename="package://livox_laser_simulation/meshes/livox_mid40.dae">
           </mesh>
           </geometry>
-      </collision>-->
+      </collision>
     </link>
     <link name="${name}">
       <xacro:null_inertial/>
@@ -90,12 +114,11 @@
     <joint name="${name}_to_${name}_base_joint" type="fixed">
       <parent link="${name}_base"/>
       <child link="${name}"/>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.047"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
     </joint>
     <xacro:Livox_Mid_gazebo_sensor name="${name}" visualize="${visualize}"/>
   </xacro:macro>
-
-  <xacro:Livox_Mid360 name="livox"/>
+    <xacro:Livox_Mid360 name="livox"/>
   <xacro:include filename="$(find livox_laser_simulation)/urdf/standardrobots_oasis300.xacro"/>
   <xacro:link_oasis name="oasis"/>
 </robot>
