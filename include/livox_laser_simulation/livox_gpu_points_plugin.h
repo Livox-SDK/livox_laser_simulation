@@ -40,14 +40,10 @@ public:
     void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 
 private:
-    void ConnectCb();
 
     void SendRosTf(const ignition::math::Pose3d& pose, const std::string& father_frame, const std::string& child_frame);
 
-    void convertDataToRotateInfo(const std::vector<std::vector<double>> &datas, std::vector<AviaRotateInfo> &avia_infos);
-
-    /*void OnNewLaserScans(const ConstLaserScanStampedPtr &_msg);*/
-    void OnNewLaserScans(ConstLaserScanStampedPtr& _msg);
+    void OnNewLaserAnglesScans(ConstLaserScanAnglesStampedPtr& _msg);
 
     ros::NodeHandle* nh_;
     ros::Publisher pub_;
@@ -55,7 +51,6 @@ private:
 
     int64_t samplesStep {0};
     int64_t currStartIndex {0};
-    int64_t maxPointSize {1000};
     int64_t downSample {1};
 
     double maxDist {400.0};

@@ -112,7 +112,7 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
         auto axis = offset.Rot() * ray * ignition::math::Vector3d(1.0, 0.0, 0.0);
         start_point = minDist * axis + offset.Pos();
         end_point = maxDist * axis + offset.Pos();
-        rayShape->AddRay(start_point, end_point);
+        rayShape->AddRay(start_point, end_point); // in laserCollision frame
     }
 }
 
@@ -190,15 +190,23 @@ void LivoxPointsPlugin::OnNewLaserScans() {
         sensor_msgs::PointCloud2Iterator<float> out_x(scan_point, "x");
         sensor_msgs::PointCloud2Iterator<float> out_y(scan_point, "y");
         sensor_msgs::PointCloud2Iterator<float> out_z(scan_point, "z");
-
+        size_t i = 0;
+        size_t raySize = 20000; //rayShape->RayShapes().size();
         for (auto &pair : points_pair) {
+            if (i >= raySize) 
+            {
+                ROS_INFO_STREAM("RaySize reched:" << raySize);
+                break;
+            }
             int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
             int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
             if (verticle_index < 0 || horizon_index < 0) {
+                i++;
                 continue;
             }
             if (verticle_index < verticalRayCount && horizon_index < rayCount) {
-                auto index = (verticalRayCount - verticle_index - 1) * rayCount + horizon_index;
+                auto index = i; //(verticalRayCount - verticle_index - 1) * rayCount + horizon_index;
+                i++;
                 auto range = minDist + rayShape->GetRange(pair.first);
                 auto intensity = rayShape->GetRetro(pair.first);
                 if (range >= RangeMax()) {
@@ -211,12 +219,13 @@ void LivoxPointsPlugin::OnNewLaserScans() {
 
                 auto rotate_info = pair.second;
                 ignition::math::Quaterniond ray;
+                                                 //rpy -> zenith = pitch azimuth = yaw
                 ray.Euler(ignition::math::Vector3d(0.0, rotate_info.zenith, rotate_info.azimuth));
                 //                auto axis = rotate * ray * ignition::math::Vector3d(1.0, 0.0, 0.0);
                 //                auto point = range * axis + world_pose.Pos();//转换成世界坐标系
 
                 auto axis = ray * ignition::math::Vector3d(1.0, 0.0, 0.0);
-                auto point = range * axis;
+                auto point = range * axis + raySensor->Pose().Pos();
                 *out_x = point.X();
                 *out_y = point.Y();
                 *out_z = point.Z();
@@ -278,7 +287,7 @@ void LivoxPointsPlugin::InitializeScan(msgs::LaserScan *&scan) {
 
     unsigned int rangeCount = RangeCount();
     unsigned int verticalRangeCount = VerticalRangeCount();
-
+    ROS_INFO_STREAM("Initializing message with size: " << verticalRangeCount*rangeCount);
     for (unsigned int j = 0; j < verticalRangeCount; ++j) {
         for (unsigned int i = 0; i < rangeCount; ++i) {
             scan->add_ranges(0);
