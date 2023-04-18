@@ -51,29 +51,6 @@ void LivoxGpuPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::Element
     sub_ = gazebo_node_->Subscribe(raySensor->Topic(), &LivoxGpuPointsPlugin::OnNewLaserAnglesScans, this);
 }
 
-#if 0
-void LivoxGpuPointsPlugin::ConnectCb()
-{
-#if 0
-  std::lock_guard<std::mutex> lock(lock_);
-  if (pub_.getNumSubscribers()) {
-    if (!sub_) {
-      sub_ = gazebo_node_->Subscribe(this->parentSensor->Topic(), &LivoxGpuPointsPlugin::OnScan, this);
-    }
-    parentSensor->SetActive(true);
-  } else {
-#if GAZEBO_MAJOR_VERSION >= 7
-    if (sub_) {
-      sub_->Unsubscribe();
-      sub_.reset();
-    }
-#endif
-    parentSensor->SetActive(false);
-  }
-#endif
-}
-#endif
-
 void LivoxGpuPointsPlugin::SendRosTf(const ignition::math::Pose3d &pose, const std::string &father_frame,
                                      const std::string &child_frame) {
     if (!tfBroadcaster) {
@@ -146,7 +123,7 @@ void LivoxGpuPointsPlugin::OnNewLaserAnglesScans(ConstLaserScanAnglesStampedPtr&
   msg.fields[5].offset = 18;
   msg.fields[5].datatype = sensor_msgs::PointField::FLOAT32;
   msg.fields[5].count = 1;
-  msg.data.resize(sampleSize * POINT_STEP); //verticalRangeCount * rangeCount * POINT_STEP);
+  msg.data.resize(sampleSize * POINT_STEP);
 
   uint8_t *ptr = msg.data.data();
   for (unsigned int i = 0; i < sampleSize; i++) 

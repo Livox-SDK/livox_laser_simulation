@@ -174,6 +174,7 @@ void LivoxOdeMultiRayShape::AddRay(const ignition::math::Vector3d &_start,
                               const ignition::math::Vector3d &_end)
 {
     MultiRayShape::AddRay(_start, _end);
+
     ODECollisionPtr odeCollision(new ODECollision(
         this->collisionParent->GetLink()));
     odeCollision->SetName("ode_ray_collision");
@@ -185,18 +186,16 @@ void LivoxOdeMultiRayShape::AddRay(const ignition::math::Vector3d &_start,
     ray->SetPoints(_start, _end);
     this->rays.push_back(ray);
 }
+
 void LivoxOdeMultiRayShape::Init() {
     ignition::math::Vector3d start, end, axis;
     double yawAngle, pitchAngle;
-    // ignition::math::Quaternion ray;
     double yDiff;
     double horzMinAngle, horzMaxAngle;
     int horzSamples = 1;
-    // double horzResolution = 1.0;
 
     double pDiff = 0;
     int vertSamples = 1;
-    // double vertResolution = 1.0;
     double vertMinAngle = 0;
 
     this->rayElem = this->sdf->GetElement("ray");
@@ -210,17 +209,13 @@ void LivoxOdeMultiRayShape::Init() {
         vertMinAngle = this->vertElem->Get<double>("min_angle");
         double vertMaxAngle = this->vertElem->Get<double>("max_angle");
         vertSamples = this->vertElem->Get<unsigned int>("samples");
-        // vertResolution = this->vertElem->Get<double>("resolution");
         pDiff = vertMaxAngle - vertMinAngle;
-        gzerr << "Vertical min_angle: " << vertMinAngle << " max_angle: " << vertMaxAngle << " angle diff: " << pDiff << "\n"; // 30 deg
     }
 
     horzMinAngle = this->horzElem->Get<double>("min_angle");
     horzMaxAngle = this->horzElem->Get<double>("max_angle");
     horzSamples = this->horzElem->Get<unsigned int>("samples");
-    // horzResolution = this->horzElem->Get<double>("resolution");
     yDiff = horzMaxAngle - horzMinAngle;
-    gzerr << "Horizontal min_angle: " << horzMinAngle << " max_angle: " << horzMaxAngle << " angle diff: " << yDiff << "\n"; // 30 deg
 
     minRayRange = this->rangeElem->Get<double>("min");
     maxRayRange = this->rangeElem->Get<double>("max");
