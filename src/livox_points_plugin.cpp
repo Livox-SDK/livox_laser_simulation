@@ -13,6 +13,7 @@
 #include <gazebo/transport/Node.hh>
 #include "livox_laser_simulation/csv_reader.hpp"
 #include "livox_laser_simulation/livox_ode_multiray_shape.h"
+#include <sdf/sdf_config.h>
 
 namespace gazebo {
 
@@ -39,12 +40,21 @@ void convertDataToRotateInfo(const std::vector<std::vector<double>> &datas, std:
 
 void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr sdf) {
     std::vector<std::vector<double>> datas;
-    std::string file_name = sdf->Get<std::string>("csv_file_name");
-    ROS_INFO_STREAM("load csv file name:" << file_name);
-    if (!CsvReader::ReadCsvFile(file_name, datas)) {
-        ROS_INFO_STREAM("cannot get csv file!" << file_name << "will return !");
+    std::string csv_file_name = sdf->Get<std::string>("csv_file_name");
+    {
+        ROS_INFO_STREAM("load csv file name:" << csv_file_name);
+    }
+    std::string resolved_csv_file_name = sdf::findFile(csv_file_name, true, true);
+    if (resolved_csv_file_name.empty())
+    {
+        ROS_INFO_STREAM("cannot resolve csv file!" << csv_file_name << "will return !");
+        return;
+    }   
+    if (!CsvReader::ReadCsvFile(resolved_csv_file_name, datas)) {
+        ROS_INFO_STREAM("cannot get csv file!" << resolved_csv_file_name << "will return !");
         return;
     }
+    
     sdfPtr = sdf;
     auto rayElem = sdfPtr->GetElement("ray");
     auto scanElem = rayElem->GetElement("scan");
