@@ -52,6 +52,7 @@
   <build_depend>tf</build_depend>
   <build_export_depend>tf</build_export_depend>
   <exec_depend>tf</exec_depend>
+  <depend>livox_ros_driver</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

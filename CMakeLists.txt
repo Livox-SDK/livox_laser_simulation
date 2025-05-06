@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 2.8.3)
 project(livox_laser_simulation)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
+  livox_ros_driver
 )
 
 find_package(gazebo REQUIRED)
@@ -29,7 +30,7 @@ include_directories(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES livox_laser_simulation
-        CATKIN_DEPENDS tf
+        CATKIN_DEPENDS tf livox_ros_driver
 )
 
 add_library(livox_laser_simulation SHARED src/livox_points_plugin.cpp src/livox_ode_multiray_shape.cpp)
