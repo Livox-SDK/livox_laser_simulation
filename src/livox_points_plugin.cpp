@@ -156,7 +156,7 @@ void LivoxPointsPlugin::OnNewLaserScans() {
                 //                auto point = range * axis + world_pose.Pos();//转换成世界坐标系
 
                 auto axis = ray * ignition::math::Vector3d(1.0, 0.0, 0.0);
-                auto point = range * axis;
+                auto point = (range + minDist) * axis;
                 scan_points.emplace_back();
                 scan_points.back().x = point.X();
                 scan_points.back().y = point.Y();
